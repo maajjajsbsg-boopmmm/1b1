@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1b1 — ملف الشركة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0A0A0F;
+    --deep: #0F0F1A;
+    --card: #13131F;
+    --border: #1E1E30;
+    --electric: #5B5FFF;
+    --pulse: #00F0A0;
+    --glow: #FF3F7A;
+    --white: #F0F0FF;
+    --muted: #7070A0;
+    --font-ar: 'Cairo', sans-serif;
+    --font-en: 'Space Grotesk', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-ar);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 4rem 2rem;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(91,95,255,0.18), transparent 70%); top: -100px; right: -100px; }
+  .orb2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,63,122,0.12), transparent 70%); bottom: -80px; left: -80px; animation-delay: -4s; }
+  .orb3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,240,160,0.10), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -2s; }
+
+  @keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(30px, 20px) scale(1.05); }
+  }
+
+  .logo-wrap {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+    background: rgba(91,95,255,0.08);
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    font-family: var(--font-en);
+    font-size: 0.78rem;
+    color: var(--pulse);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+    margin-bottom: 2rem;
+  }
+  .logo-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--pulse);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .logo-main {
+    font-family: var(--font-en);
+    font-size: clamp(5rem, 18vw, 12rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    background: linear-gradient(135deg, var(--white) 0%, var(--electric) 50%, var(--pulse) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+
+  .hero-tagline {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 1.5rem auto 0;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tagline span { color: var(--white); font-weight: 600; }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--font-en);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--electric); }
+  .stat-lbl { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    z-index: 1;
+    animation: float 2.5s ease-in-out infinite;
+  }
+  .scroll-hint svg { width: 20px; opacity: 0.5; }
+  @keyframes float { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 2rem; position: relative; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    font-family: var(--font-en);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--electric);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em {
+    font-style: normal;
+    color: var(--electric);
+  }
+
+  .section-body {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.8;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 2rem;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .about-visual {
+    position: relative;
+    height: 420px;
+  }
+
+  .about-card {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-main {
+    width: 260px;
+    top: 0; right: 0;
+    background: linear-gradient(135deg, rgba(91,95,255,0.15), var(--card));
+  }
+
+  .card-main .icon {
+    width: 48px; height: 48px;
+    background: var(--electric);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-main h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+  .card-main p { font-size: 0.82rem; color: var(--muted); }
+
+  .card-float {
+    width: 200px;
+    bottom: 40px; left: 0;
+    animation: cardFloat 4s ease-in-out infinite;
+  }
+  @keyframes cardFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .card-float .metric {
+    font-family: var(--font-en);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--pulse);
+  }
+  .card-float .metric-lbl { font-size: 0.8rem; color: var(--muted); }
+
+  .card-accent {
+    width: 160px;
+    top: 120px; left: 60px;
+    border-color: rgba(255,63,122,0.3);
+    background: rgba(255,63,122,0.08);
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .card-accent .dot { width: 10px; height: 10px; background: var(--glow); border-radius: 50%; }
+  .card-accent span { font-size: 0.82rem; color: var(--white); }
+
+  /* ── SERVICES ── */
+  .services-bg { background: var(--deep); }
+
+  .services-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 3.5rem;
+  }
+
+  .service-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.8rem 2rem;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--electric), var(--pulse));
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 0;
+  }
+
+  .service-card:hover { transform: translateX(-4px); border-color: var(--electric); box-shadow: 0 8px 40px rgba(91,95,255,0.15); }
+  .service-card:hover::before { opacity: 0.05; }
+  .service-card > * { position: relative; z-index: 1; }
+
+  .service-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  .s1 { background: rgba(91,95,255,0.15); }
+  .s2 { background: rgba(255,63,122,0.15); }
+  .s3 { background: rgba(0,240,160,0.15); }
+  .s4 { background: rgba(255,200,0,0.12); }
+  .s5 { background: rgba(160,91,255,0.15); }
+  .s6 { background: rgba(0,180,255,0.12); }
+  .s7 { background: rgba(0,240,160,0.12); }
+
+  .service-text { flex: 1; }
+  .service-card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+  .service-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin: 0; }
+
+  /* ── PROCESS ── */
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3.5rem;
+    position: relative;
+  }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    right: 12.5%;
+    left: 12.5%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--electric), var(--pulse));
+    z-index: 0;
+  }
+
+  .step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-num {
+    width: 56px; height: 56px;
+    background: var(--card);
+    border: 2px solid var(--electric);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--electric);
+    margin: 0 auto 1.2rem;
+    position: relative;
+  }
+
+  .step-num::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: radial-gradient(circle, rgba(91,95,255,0.3), transparent 70%);
+    border-radius: 50%;
+  }
+
+  .step h3 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .step p { font-size: 0.8rem; color: var(--muted); }
+
+  /* ── NUMBERS ── */
+  .numbers-bg { background: var(--deep); }
+
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    margin-top: 3.5rem;
+  }
+
+  .number-cell {
+    background: var(--card);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .number-big {
+    font-family: var(--font-en);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--white), var(--electric));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .number-suffix { color: var(--pulse); }
+  .number-lbl { font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem; }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 2rem;
+  }
+
+  .cta-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 5rem 3rem;
+    max-width: 780px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(91,95,255,0.15), transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .cta-box p { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; position: relative; }
+
+  .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--electric), #8B8FFF);
+    color: white;
+    padding: 0.9rem 2.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 30px rgba(91,95,255,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(91,95,255,0.5); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    padding: 0.9rem 2.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--electric); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-logo { font-family: var(--font-en); font-size: 1.5rem; font-weight: 700; color: var(--white); }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-copy { color: var(--muted); font-size: 0.8rem; }
+
+  /* ── CONTACT ROW ── */
+  .contact-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .contact-chip svg { width: 16px; flex-shrink: 0; opacity: 0.6; }
+  .contact-chip span { color: var(--white); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-visual { display: none; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .process-steps::before { display: none; }
+    .numbers-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .numbers-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- FLOATING SOCIAL BAR -->
+  <div style="position:fixed; left:1.5rem; bottom:2rem; z-index:100; display:flex; flex-direction:column; gap:0.7rem;">
+    <a href="https://www.instagram.com/1b1.m?igsh=djRjd2RtdjI4cGdp" target="_blank" style="width:44px;height:44px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 15px rgba(220,39,67,0.4);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/share/1MSc9736Ya/" target="_blank" style="width:44px;height:44px;background:#1877F2;border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 15px rgba(24,119,242,0.4);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://wa.me/9647840447202" target="_blank" style="width:44px;height:44px;background:#25D366;border-radius:12px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 15px rgba(37,211,102,0.4);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+  </div>
+<section class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+
+  <div class="logo-wrap">
+    <div class="logo-badge">وكالة رقمية متخصصة</div>
+    <div class="logo-main">1b1</div>
+    <p class="hero-tagline">نبني <span>حضورك الرقمي</span> بذكاء واستراتيجية تُحوّل المتابعين إلى عملاء</p>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">+<span>250</span></div>
+      <div class="stat-lbl">عميل ناجح</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>97</span>%</div>
+      <div class="stat-lbl">نسبة رضا العملاء</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">+<span>5</span>M</div>
+      <div class="stat-lbl">وصول شهري</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>6</span></div>
+      <div class="stat-lbl">سنوات خبرة</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    اكتشف المزيد
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ABOUT ═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="section-tag">من نحن</div>
+        <h2 class="section-title">شركاء نجاحك في <em>العالم الرقمي</em></h2>
+        <p class="section-body">
+          1b1 وكالة رقمية متكاملة تأسست بهدف واحد: تحويل العلامات التجارية إلى قصص نجاح حقيقية على منصات التواصل الاجتماعي. نجمع بين الإبداع والبيانات لصياغة استراتيجيات تُحدث فارقاً ملموساً في أرقام أعمالك.
+        </p>
+        <div class="contact-row">
+          <a href="mailto:info@1b1.agency" class="contact-chip" style="text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span>info@1b1.agency</span>
+          </a>
+          <a href="tel:+9647840447202" class="contact-chip" style="text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.18 2 2 0 012.1 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+            <span>+964 784 044 7202</span>
+          </a>
+          <a href="https://wa.me/9647840447202" target="_blank" class="contact-chip" style="text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="opacity:0.7;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span>واتساب</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="about-visual">
+        <div class="about-card card-main">
+          <div class="icon">🚀</div>
+          <h3>نمو مضمون</h3>
+          <p>استراتيجيات مبنية على بيانات حقيقية تضمن نمو متسق لحسابك</p>
+        </div>
+        <div class="about-card card-float">
+          <div class="metric">+340%</div>
+          <div class="metric-lbl">متوسط نمو التفاعل</div>
+        </div>
+        <div class="about-card card-accent">
+          <div class="dot"></div>
+          <span>مباشر الآن</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ SERVICES ═══════════════════════════════ -->
+<section class="services-bg">
+  <div class="container">
+    <div class="section-tag">خدماتنا</div>
+    <h2 class="section-title">كل ما تحتاجه لـ<em>حضور رقمي</em> قوي</h2>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon s1">📱</div>
+        <div class="service-text">
+          <h3>إدارة حسابات السوشيل ميديا</h3>
+          <p>نتولى إدارة حساباتك على جميع المنصات بمحتوى يومي احترافي يعكس هوية علامتك التجارية.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon s2">🎨</div>
+        <div class="service-text">
+          <h3>تصميم المحتوى البصري</h3>
+          <p>تصاميم إبداعية مخصصة من ريلز وستوري وبوستات تجذب العين وتعزز التفاعل.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon s3">📈</div>
+        <div class="service-text">
+          <h3>الإعلانات الممولة</h3>
+          <p>حملات إعلانية مدروسة على Meta وTikTok وSnapchat تحقق أعلى عائد استثمار بأقل تكلفة.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon s4">✍️</div>
+        <div class="service-text">
+          <h3>كتابة المحتوى والكوبي رايتينج</h3>
+          <p>نصوص تسويقية مقنعة بالعربية والإنجليزية تُحوّل القراء إلى مشترين فعليين.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon s5">🤝</div>
+        <div class="service-text">
+          <h3>التسويق عبر المؤثرين</h3>
+          <p>نربطك بالمؤثرين المناسبين لجمهورك ونُدير كامل الحملة من البداية للنهاية.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon s6">📊</div>
+        <div class="service-text">
+          <h3>التحليل والتقارير</h3>
+          <p>تقارير شهرية شاملة بمؤشرات واضحة توضح أثر كل ريال تُنفقه في نمو حسابك.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon s7">💻</div>
+        <div class="service-text">
+          <h3>إنشاء وبرمجة المواقع الإلكترونية</h3>
+          <p>نصمم ونبرمج مواقع احترافية سريعة ومتجاوبة مع جميع الأجهزة — من المواقع التعريفية والمتاجر الإلكترونية إلى المنصات المتكاملة. نستخدم أحدث التقنيات لضمان تجربة مستخدم استثنائية وظهور قوي على محركات البحث.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ PROCESS ═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-tag">كيف نعمل</div>
+    <h2 class="section-title">من <em>الفكرة</em> إلى النتيجة</h2>
+
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>الاكتشاف</h3>
+        <p>نفهم علامتك التجارية وجمهورك وأهدافك بعمق</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>الاستراتيجية</h3>
+        <p>نبني خطة محتوى مخصصة تضمن الوصول والتفاعل</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>التنفيذ</h3>
+        <p>ننشر المحتوى ونُدير الحملات بدقة واحترافية</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>التحسين</h3>
+        <p>نُحلل النتائج ونُحسّن باستمرار لتحقيق أقصى نمو</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════ NUMBERS ═══════════════════════════════ -->
+<section class="numbers-bg">
+  <div class="container">
+    <div class="section-tag">أرقامنا تتحدث</div>
+    <h2 class="section-title">نتائج <em>حقيقية</em> لعملاء حقيقيين</h2>
+
+    <div class="numbers-grid">
+      <div class="number-cell">
+        <div class="number-big">+<span class="number-suffix">250</span></div>
+        <div class="number-lbl">عميل راضٍ</div>
+      </div>
+      <div class="number-cell">
+        <div class="number-big">5<span class="number-suffix">M+</span></div>
+        <div class="number-lbl">وصول شهري</div>
+      </div>
+      <div class="number-cell">
+        <div class="number-big">340<span class="number-suffix">%</span></div>
+        <div class="number-lbl">متوسط نمو التفاعل</div>
+      </div>
+      <div class="number-cell">
+        <div class="number-big">97<span class="number-suffix">%</span></div>
+        <div class="number-lbl">نسبة رضا العملاء</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA ═══════════════════════════════ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <h2>جاهز تبدأ رحلتك الرقمية؟</h2>
+      <p>تواصل معنا اليوم واحصل على استشارة مجانية لمعرفة كيف يمكن لـ1b1 أن تحوّل وجودك على السوشيل ميديا</p>
+      <div class="cta-buttons">
+        <a href="https://wa.me/9647840447202" target="_blank" class="btn-primary">تواصل معنا على واتساب</a>
+        <a href="https://www.instagram.com/1b1.m?igsh=djRjd2RtdjI4cGdp" target="_blank" class="btn-secondary">تابعنا على إنستغرام</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">1b1</div>
+    <div class="footer-links">
+      <a href="https://www.instagram.com/1b1.m?igsh=djRjd2RtdjI4cGdp" target="_blank">إنستغرام</a>
+      <a href="https://www.facebook.com/share/1MSc9736Ya/" target="_blank">فيسبوك</a>
+      <a href="https://wa.me/9647840447202" target="_blank">واتساب</a>
+      <a href="tel:+9647840447202">اتصل بنا</a>
+    </div>
+    <div class="footer-copy">© 2026 1b1 Agency. جميع الحقوق محفوظة.</div>
+  </div>
+</footer>
+
+</body>
+</html>
